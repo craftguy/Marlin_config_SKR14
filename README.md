@@ -12,3 +12,4 @@ It's configured with the following:
 * Easter egg is activated :-P
 * TImeout for the screen returning to home is deactivated
 * The edge clearence is only for the front and back and set to 10mm
+* RGB Neopixel configured up to 30 of them (NOT RGBW)
