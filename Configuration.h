@@ -136,9 +136,9 @@
 //#define BLUETOOTH
 
 // Choose the name from boards.h that matches your setup
-#ifndef MOTHERBOARD 
+#ifndef MOTHERBOARD
   #if ENABLED(SKR_14_Turbo)
-    #define MOTHERBOARD BOARD_BTT_SKR_V1_4_TURBO 
+    #define MOTHERBOARD BOARD_BTT_SKR_V1_4_TURBO
   #else
     #define MOTHERBOARD BOARD_MELZI_CREALITY
   #endif
@@ -483,7 +483,7 @@
   #define HEATER_0_MAXTEMP 300
 #elif ENABLED(E3D_Extreme)
   #define HEATER_0_MAXTEMP 320
-#else 
+#else
   #define HEATER_0_MAXTEMP 275
 #endif
 #define HEATER_1_MAXTEMP 300
@@ -788,7 +788,7 @@
  * Override with M92
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 800, 138.8}
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 138.8}
 
 /**
  * Default Max Feed Rate (mm/s)
