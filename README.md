@@ -4,7 +4,7 @@ It's configured with the following:
 
 ### Marlin 2.0.6
 * Machine Ender 5 (adjusting some small parameter can make it work for other machines)
-* Drivers are TCM 2206'
+* Drivers are TCM 2209'
 * Sensorless homing is activated for the X and Y axis 
 * BL-touch for probing
 * Unified Bed Leveling
