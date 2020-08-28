@@ -21,7 +21,13 @@
  */
 #pragma once
 
-#define CONFIG_EXAMPLES_DIR "Creality/Ender-5/BigTreeTech SKR 1.4 Turbo"
+#define CONFIG_EXAMPLES_DIR "Creality/Ender-5/BigTreeTech SKR 1.4 Turbo (TMC2209)"
+
+//#define E3D           // Enable for the E3D all metal hotend.
+//#define E3D_Extreme     // Enable to print at over 285°C. Strongly discouraged by E3D but I neeeded it briefly. They say a little over isn't too risky but should not be done long term.
+//#define chamber         // Enable for Heated Chamber. Thermistor should be connected to TEMP-E1, Heater to the port next to the bed heater (with the hotend heatsink fan moved to an always-on pin).
+#define TMC2209_Enabled // Enable for TMC2209 drivers.
+#define SKR_14_Turbo    // Enable for the SKR 1.4 turbo.
 
 /**
  * Configuration.h
@@ -76,13 +82,6 @@
 #define STRING_CONFIG_H_AUTHOR "(PetrosSystems, 08-08-2020, Ender 5 | SKR 1.4TURBO)" // Who made the changes.
 //#define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 
-
-//#define E3D // Enable this if you have an E3D all metal hotend
-//#define E3D_Extreme // Enable this if you want to print at more than 285 degrees, this is strongly not reccomended by E3D but I neeeded it briefly. They say a little over isn't too risky but should not be done long term
-//#define chamber // Enable this to if you have a chamber with the thermistor in the E1 thermistor connector, the heater in the other heater port (beside the bed heater) and the hotend heatsink fan which was prevuiysly in this hole in a different, always on, fan pin
-#define TMC2209_Enabled // Enable if you have TMC2209 drivers
-#define SKR_14_Turbo // Enable if SKR 1.4 turbo
-
 /**
  * *** VENDORS PLEASE READ ***
  *
@@ -136,9 +135,9 @@
 //#define BLUETOOTH
 
 // Choose the name from boards.h that matches your setup
-#ifndef MOTHERBOARD 
+#ifndef MOTHERBOARD
   #if ENABLED(SKR_14_Turbo)
-    #define MOTHERBOARD BOARD_BTT_SKR_V1_4_TURBO 
+    #define MOTHERBOARD BOARD_BTT_SKR_V1_4_TURBO
   #else
     #define MOTHERBOARD BOARD_MELZI_CREALITY
   #endif
@@ -248,8 +247,8 @@
 
   #elif ENABLED(MAGNETIC_PARKING_EXTRUDER)
 
-    #define MPE_FAST_SPEED      9000      // (mm/m) Speed for travel before last distance point
-    #define MPE_SLOW_SPEED      4500      // (mm/m) Speed for last distance travel to park and couple
+    #define MPE_FAST_SPEED      9000      // (mm/min) Speed for travel before last distance point
+    #define MPE_SLOW_SPEED      4500      // (mm/min) Speed for last distance travel to park and couple
     #define MPE_TRAVEL_DISTANCE   10      // (mm) Last distance point
     #define MPE_COMPENSATION       0      // Offset Compensation -1 , 0 , 1 (multiplier) only for coupling
 
@@ -297,8 +296,8 @@
     #if ENABLED(PRIME_BEFORE_REMOVE)
       #define SWITCHING_TOOLHEAD_PRIME_MM           20  // (mm)   Extruder prime length
       #define SWITCHING_TOOLHEAD_RETRACT_MM         10  // (mm)   Retract after priming length
-      #define SWITCHING_TOOLHEAD_PRIME_FEEDRATE    300  // (mm/m) Extruder prime feedrate
-      #define SWITCHING_TOOLHEAD_RETRACT_FEEDRATE 2400  // (mm/m) Extruder retract feedrate
+      #define SWITCHING_TOOLHEAD_PRIME_FEEDRATE    300  // (mm/min) Extruder prime feedrate
+      #define SWITCHING_TOOLHEAD_RETRACT_FEEDRATE 2400  // (mm/min) Extruder retract feedrate
     #endif
   #elif ENABLED(ELECTROMAGNETIC_SWITCHING_TOOLHEAD)
     #define SWITCHING_TOOLHEAD_Z_HOP          2         // (mm) Z raise for switching
@@ -343,7 +342,7 @@
 //#define PSU_NAME "Power Supply"
 
 #if ENABLED(PSU_CONTROL)
-  #define PSU_ACTIVE_HIGH false     // Set 'false' for ATX, 'true' for X-Box
+  #define PSU_ACTIVE_STATE LOW      // Set 'LOW' for ATX, 'HIGH' for X-Box
 
   //#define PSU_DEFAULT_OFF         // Keep power off until enabled directly with M80
   //#define PSU_POWERUP_DELAY 250   // (ms) Delay for the PSU to warm up to full power
@@ -483,7 +482,7 @@
   #define HEATER_0_MAXTEMP 300
 #elif ENABLED(E3D_Extreme)
   #define HEATER_0_MAXTEMP 320
-#else 
+#else
   #define HEATER_0_MAXTEMP 275
 #endif
 #define HEATER_1_MAXTEMP 300
@@ -1040,13 +1039,13 @@
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
 #define PROBING_MARGIN 10
 
-// X and Y axis travel speed (mm/m) between probes
-#define XY_PROBE_SPEED 8000
+// X and Y axis travel speed (mm/min) between probes
+#define XY_PROBE_SPEED (133*60)
 
-// Feedrate (mm/m) for the first approach when double-probing (MULTIPLE_PROBING == 2)
+// Feedrate (mm/min) for the first approach when double-probing (MULTIPLE_PROBING == 2)
 #define Z_PROBE_SPEED_FAST HOMING_FEEDRATE_Z
 
-// Feedrate (mm/m) for the "accurate" probe of each point
+// Feedrate (mm/min) for the "accurate" probe of each point
 #define Z_PROBE_SPEED_SLOW (Z_PROBE_SPEED_FAST / 2)
 
 /**
@@ -1219,10 +1218,11 @@
  */
 //#define FILAMENT_RUNOUT_SENSOR
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
-  #define NUM_RUNOUT_SENSORS   1     // Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.
-  #define FIL_RUNOUT_STATE     LOW   // Pin state indicating that filament is NOT present.
-  #define FIL_RUNOUT_PULLUP          // Use internal pullup for filament runout pins.
-  //#define FIL_RUNOUT_PULLDOWN      // Use internal pulldown for filament runout pins.
+  #define FIL_RUNOUT_ENABLED_DEFAULT true // Enable the sensor on startup. Override with M412 followed by M500.
+  #define NUM_RUNOUT_SENSORS   1          // Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.
+  #define FIL_RUNOUT_STATE     LOW        // Pin state indicating that filament is NOT present.
+  #define FIL_RUNOUT_PULLUP               // Use internal pullup for filament runout pins.
+  //#define FIL_RUNOUT_PULLDOWN           // Use internal pulldown for filament runout pins.
 
   // Set one or more commands to execute on filament runout.
   // (After 'M412 H' Marlin will ask the host to handle the process.)
@@ -1439,7 +1439,7 @@
   #define Z_SAFE_HOMING_Y_POINT Y_CENTER  // Y point for Z homing
 #endif
 
-// Homing speeds (mm/m)
+// Homing speeds (mm/min)
 #define HOMING_FEEDRATE_XY (20*60)
 #define HOMING_FEEDRATE_Z  (4*60)
 
@@ -2315,6 +2315,10 @@
 
 // @section extras
 
+// Set number of user-controlled fans. Disable to use all board-defined fans.
+// :[1,2,3,4,5,6,7,8]
+//#define NUM_M106_FANS 1
+
 // Increase the FAN PWM frequency. Removes the PWM noise but increases heating in the FET/Arduino
 //#define FAST_PWM_FAN
 
@@ -2395,6 +2399,7 @@
   //#define NEOPIXEL_PIN     4       // LED driving pin
   //#define NEOPIXEL2_TYPE NEOPIXEL_TYPE
   //#define NEOPIXEL2_PIN    5
+  //#define NEOPIXEL2_INSERIES     // Default behavior is NeoPixel 2 in parallel
   #define NEOPIXEL_PIXELS 30       // Number of LEDs in the strip, larger of 2 strips if 2 neopixel strips are used
   #define NEOPIXEL_IS_SEQUENTIAL   // Sequential display for temperature change - LED by LED. Disable to change all LEDs at once.
   #define NEOPIXEL_BRIGHTNESS 255  // Initial brightness (0-255)
