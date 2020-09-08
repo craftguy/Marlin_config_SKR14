@@ -2,7 +2,7 @@
 This configuration file is for the SKR 1.4 TURBO
 It's configured with the following:
 
-### Marlin 2.0.6
+### Marlin 2.0.6.1
 * Machine Ender 5 (adjusting some small parameter can make it work for other machines)
 * Drivers are TCM 2209'
 * Sensorless homing is activated for the X and Y axis 
